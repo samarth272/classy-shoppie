@@ -1,0 +1,112 @@
+version: "3.8"
+
+services:
+  
+  postgres:
+    image: postgres:16
+    container_name: classy-postgres
+    restart: always
+
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    networks:
+      - classy-network
+
+  redis:
+    image: redis:7
+    container_name: classy-redis
+    restart: always
+
+    ports:
+      - "6379:6379"
+
+    volumes:
+      - redis_data:/data
+
+    networks:
+      - classy-network
+
+  kafka:
+    image: apache/kafka:latest
+    container_name: classy-kafka
+    restart: always
+
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093        #node-id@host:port
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      # KRaft cluster id
+      CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+
+    ports:
+      - "9092:9092"
+
+    networks:
+      - classy-network
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: classy-kafka-ui
+    restart: always
+
+    environment:
+      KAFKA_CLUSTERS_0_NAME: classy-kafka
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: classy-kafka:9092
+      KAFKA_CLUSTERS_0_PROPERTIES_SECURITY_PROTOCOL: PLAINTEXT
+
+    depends_on:
+      - kafka
+
+    ports:
+      - "8085:8080"
+
+    networks:
+      - classy-network
+
+  discovery-server:
+
+    build:
+      context: ./discovery-server
+    
+    container_name: classy-discovery-server
+    restart: always
+
+    ports:
+      - "8761:8761"
+
+    depends_on:
+      - postgres
+      - redis
+      - kafka
+
+    networks:
+      - classy-network
+    
+volumes:
+  postgres_data:
+  redis_data:
+  kafka_data:
+
+networks:
+  classy-network:
+    name: classy-network
