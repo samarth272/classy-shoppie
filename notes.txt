@@ -1,0 +1,40 @@
+//created git config & git ignore
+//created backend & frontend folders
+//created docker-compose.yml File
+=> added postgres,redis, kafka & kafka-ui in docker-compose.yml within same network
+
+=> kafka-ui endpoint: http://localhost:8085/
+
+=> docker container up command=>
+Eg:
+    docker compose up -d
+
+=> docker container down with volume(data) command=>
+Eg:
+    docker compose down -v
+
+=> docker container up command with building image again/from scratch=>
+Eg:
+    docker compose up -d --build
+
+=> created discovery-server microservice & enabled eureka-server configuration in it
+=> created dockerfile inside discovery-server=> which builds package after every code change & give us new discovery-server.jar from target folder after mvn clean package
+=> then added this discovery-server microservice in docker-compose.yml file with required properties , endpoint => http://localhost:8761/
+
+=> then created config-server with spring-cloud-config-server
+=> then created config-repo for configuration part/application.yml for each microservice & connected this config-repo to config-server
+Eg:  
+  in config-server application.yml file=>
+
+   cloud:
+    config:
+      server:
+        native:
+          search-locations:
+            file:../config-repo
+
+=> now hit endpoint => http://localhost:8888/application/default
+  for user-service => http://localhost:8888/user-service/default
+  for product-service => http://localhost:8888/product-service/default
+
+=> 

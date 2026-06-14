@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: user-service
+
+  datasource:
+    url: jdbc:postgresql://classy-postgres:5432/userdb            #using db with service-name not localhost
+    username: postgres
+    password: postgres123

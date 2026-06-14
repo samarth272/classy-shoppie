@@ -44,7 +44,7 @@ services:
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093        #node-id@host:port
       KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://classy-kafka:9092
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
@@ -94,10 +94,25 @@ services:
     ports:
       - "8761:8761"
 
+    networks:
+      - classy-network
+
+  config-server:
+
+    build:
+      context: ./config-server
+
+    container_name: classy-config-server
+    restart: always
+
+    ports:
+      - "8888:8888"
+
+    volumes:
+      - ./config-repo:/config-repo
+
     depends_on:
-      - postgres
-      - redis
-      - kafka
+      - discovery-server
 
     networks:
       - classy-network
