@@ -116,7 +116,23 @@ services:
 
     networks:
       - classy-network
-    
+
+  api-gateway:
+
+    build:
+      context: ./api-gateway
+
+    container_name: classy-api-gateway
+
+    restart: always
+
+    ports:
+      - "8080:8080"
+
+    depends_on:
+      - discovery-server
+      - config-server
+
 volumes:
   postgres_data:
   redis_data:
