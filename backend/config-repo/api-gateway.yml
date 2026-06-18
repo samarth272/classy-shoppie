@@ -4,7 +4,11 @@ server:
 spring:
   cloud:
     gateway:
-      routes: []
+      routes:
+        - id: product-service
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/products/**
 
 eureka:
   client:

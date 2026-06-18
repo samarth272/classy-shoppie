@@ -14,8 +14,8 @@ FROM eclipse-temurin:21-jdk
 
 WORKDIR /app
 
-COPY --from=build /app/target/api-gateway.jar app.jar
+COPY --from=build /app/target/product-service.jar app.jar
 #copy jar from build stage not runtime stage
-EXPOSE 8080
+EXPOSE 8081
 
 ENTRYPOINT ["java","-jar","app.jar"]

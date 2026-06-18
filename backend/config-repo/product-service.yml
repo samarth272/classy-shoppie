@@ -6,3 +6,20 @@ spring:
     url: jdbc:postgresql://classy-postgres:5432/productdb             #using db with service-name not localhost
     username: postgres
     password: postgres123
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+    show-sql: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://classy-discovery-server:8761/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
