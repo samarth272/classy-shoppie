@@ -6,9 +6,15 @@ spring:
     gateway:
       routes:
         - id: product-service
-          uri: lb://PRODUCT-SERVICE
+          uri: http://classy-product-service:8081
           predicates:
             - Path=/products/**
+          filters:
+            - StripPrefix=1
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
 
 eureka:
   client:

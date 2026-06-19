@@ -3,7 +3,7 @@ spring:
     name: product-service
 
   datasource:
-    url: jdbc:postgresql://classy-postgres:5432/productdb             #using db with service-name not localhost
+    url: jdbc:postgresql://classy-product-postgres:5432/productdb             #using db with service-name not localhost
     username: postgres
     password: postgres123
 
@@ -12,6 +12,13 @@ spring:
       ddl-auto: update
 
     show-sql: true
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
 
 eureka:
   client:
@@ -22,4 +29,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,prometheus
