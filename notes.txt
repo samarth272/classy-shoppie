@@ -37,4 +37,18 @@ Eg:
   for user-service => http://localhost:8888/user-service/default
   for product-service => http://localhost:8888/product-service/default
 
-=> 
+=> connect debugging with docker
+=> 1. in product-service dockerfile expose 5005 & change ENTRYPOINT also
+Eg: 
+#command for debug below with docker
+EXPOSE 8081 5005
+
+ENTRYPOINT [ "java", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005","-jar","app.jar"]
+
+=> 2. expose port in docker-compose.yml
+Eg:
+     ports:
+      - "8081:8081"
+      - "5005:5005"        //local port to docker
+
+=> 3. add remove JVM debug from edit configuration in Intellij

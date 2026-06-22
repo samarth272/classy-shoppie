@@ -2,13 +2,19 @@ spring:
   application:
     name: product-service
 
+  config:
+    import: configserver:http://classy-config-server:8888
+
 eureka:
   instance:
     hostname: classy-product-service
     prefer-ip-address: false
 
-  config:
-    import: configserver:http://classy-config-server:8888
-
 server:
   port: 8081
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+    org.springframework.http.converter: TRACE
+    com.fasterxml.jackson: TRACE

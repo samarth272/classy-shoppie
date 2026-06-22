@@ -54,6 +54,7 @@ public class ProductServiceImpl implements ProductService {
             key = "#id"
     )
     public ProductResponse getProductById(Long id) {
+        System.out.println("Requested ID : " + id);
         Product product =
                 productRepository.findById(id)
                         .orElseThrow(
@@ -62,6 +63,7 @@ public class ProductServiceImpl implements ProductService {
                                 )
                         );
 
+        System.out.println("Product found : " + product);
         return ProductMapper.toResponse(product);
     }
 

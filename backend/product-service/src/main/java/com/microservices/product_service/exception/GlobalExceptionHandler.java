@@ -13,10 +13,12 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleProductNotFound(
             ProductNotFoundException ex
     ){
+
         ErrorResponse response =
                 new ErrorResponse(
                         404,
@@ -30,6 +32,8 @@ public class GlobalExceptionHandler {
                 HttpStatus.NOT_FOUND
         );
     }
+
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidation(
@@ -47,6 +51,7 @@ public class GlobalExceptionHandler {
                         )
                 );
 
+
         ErrorResponse response =
                 new ErrorResponse(
                         400,
@@ -55,9 +60,33 @@ public class GlobalExceptionHandler {
                         errors
                 );
 
+
         return new ResponseEntity<>(
                 response,
                 HttpStatus.BAD_REQUEST
+        );
+    }
+
+
+
+    // Add this for debugging
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGlobalException(
+            Exception ex
+    ){
+
+        ErrorResponse response =
+                new ErrorResponse(
+                        500,
+                        ex.getMessage(),
+                        LocalDateTime.now(),
+                        null
+                );
+
+
+        return new ResponseEntity<>(
+                response,
+                HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
 }

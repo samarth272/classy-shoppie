@@ -16,6 +16,9 @@ WORKDIR /app
 
 COPY --from=build /app/target/product-service.jar app.jar
 #copy jar from build stage not runtime stage
-EXPOSE 8081
+#EXPOSE 8081
+#command for debug below with docker
+EXPOSE 8081 5005
 
-ENTRYPOINT ["java","-jar","app.jar"]
+#ENTRYPOINT ["java","-jar","app.jar"]
+ENTRYPOINT [ "java", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005","-jar","app.jar"]

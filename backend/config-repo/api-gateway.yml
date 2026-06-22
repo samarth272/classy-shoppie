@@ -6,11 +6,10 @@ spring:
     gateway:
       routes:
         - id: product-service
-          uri: http://classy-product-service:8081
+          uri: lb://product-service
           predicates:
             - Path=/products/**
-          filters:
-            - StripPrefix=1
+
       discovery:
         locator:
           enabled: true
