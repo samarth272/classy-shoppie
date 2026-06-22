@@ -4,5 +4,5 @@ spring:
 
   datasource:
     url: jdbc:postgresql://classy-postgres:5432/userdb            #using db with service-name not localhost
-    username: postgres
-    password: postgres123
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}

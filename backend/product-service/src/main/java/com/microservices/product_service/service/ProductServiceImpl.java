@@ -3,6 +3,7 @@ package com.microservices.product_service.service;
 import com.microservices.product_service.dto.ProductRequest;
 import com.microservices.product_service.dto.ProductResponse;
 import com.microservices.product_service.entity.Product;
+import com.microservices.product_service.event.ProductCreatedEvent;
 import com.microservices.product_service.exception.ProductNotFoundException;
 import com.microservices.product_service.mapper.ProductMapper;
 import com.microservices.product_service.repository.ProductRepository;
@@ -20,6 +21,8 @@ import org.springframework.stereotype.Service;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
+
+    private final ProductEventProducer productEventProducer;
 
     @Override
     public Page<ProductResponse> getProducts(int page, int size, String sortBy, String direction){
@@ -44,6 +47,17 @@ public class ProductServiceImpl implements ProductService {
 
         Product savedProduct =
                 productRepository.save(product);
+
+        //create kafka event
+        ProductCreatedEvent event= new ProductCreatedEvent(
+                savedProduct.getId(),
+                savedProduct.getName(),
+                savedProduct.getPrice(),
+                savedProduct.getQuantity()
+        );
+
+        //publish kafka event
+        productEventProducer.sendProductCreatedEvent(event);
 
         return ProductMapper.toResponse(savedProduct);
     }

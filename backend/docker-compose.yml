@@ -16,7 +16,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "pg_isready -U product_user -d productdb"
+          "pg_isready -U postgresql -d inventorydb"
         ]
       interval: 10s
       timeout: 5s
@@ -200,8 +200,63 @@ services:
     networks:
       - classy-network
 
+  inventory-service:
+
+    build:
+      context: ./inventory-service
+
+    container_name: classy-inventory-service
+    restart: always
+
+    ports:
+      - "8082:8082"
+
+    depends_on:
+      product-postgres:
+        condition: service_healthy
+
+      config-server:
+        condition: service_healthy
+
+      kafka:
+        condition: service_started
+
+    networks:
+      - classy-network
+
+  inventory-postgres:
+
+    image: postgres:16
+    container_name: classy-inventory-postgres
+    restart: always
+
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: inventorydb
+
+    ports:
+      - "5434:5432"
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U product_user -d productdb"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+    volumes:
+      - inventory_postgres_data:/var/lib/postgresql/data
+
+    networks:
+      - classy-network
+
 volumes:
   product_postgres_data:
+  inventory_postgres_data:
   redis_data:
   kafka_data:
 
