@@ -1,0 +1,33 @@
+spring:
+
+  datasource:
+    url: jdbc:postgresql://classy-order-postgres:5432/orderdb
+    username: postgres
+    password: postgres123
+
+  kafka:
+    bootstrap-servers: classy-kafka:9092
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+    show-sql: true
+
+  eureka:
+
+    client:
+      service-url:
+        defaultZone: http://classy-discovery-server:8761/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: FULL

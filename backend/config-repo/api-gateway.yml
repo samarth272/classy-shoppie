@@ -10,6 +10,16 @@ spring:
           predicates:
             - Path=/products/**
 
+        - id: inventory-service
+          uri: lb://inventory-service
+          predicates:
+            - Path=/inventory/**
+
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/orders/**
+
       discovery:
         locator:
           enabled: true
